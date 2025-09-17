@@ -106,7 +106,7 @@ export class AuthService {
             await this.redisservice.set(
               `session:${user.id}`,
               JSON.stringify(currentsession),
-              604800,
+              60 * 60 * 1,
             );
             return {
               accesstoken: accesstoken,
@@ -127,7 +127,7 @@ export class AuthService {
     }
   }
 
-  private async jwtsignaccess(data: { id: string }) {
+  async jwtsignaccess(data: { id: string }) {
     const jwtaccesstoken = await this.jwtservice.signAsync(data, {
       expiresIn: '15m',
       secret: this.configservice.get<string>('JWT_ACCESS_SECRET'),
@@ -139,9 +139,9 @@ export class AuthService {
     }
   }
 
-  private async jwtsignrefresh(data: { id: string }) {
+  async jwtsignrefresh(data: { id: string }) {
     const jwtrefreshtoken = await this.jwtservice.signAsync(data, {
-      expiresIn: '7d',
+      expiresIn: '1d',
       secret: this.configservice.get<string>('JWT_REFRESH_SECRET'),
     });
     if (jwtrefreshtoken) {
