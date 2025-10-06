@@ -99,9 +99,6 @@ importers:
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
-      '@types/node':
-        specifier: ^22.10.7
-        version: 22.18.1
       '@types/supertest':
         specifier: ^6.0.2
         version: 6.0.3

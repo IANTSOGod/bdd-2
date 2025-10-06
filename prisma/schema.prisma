@@ -29,7 +29,8 @@ model User {
   updatedAt     DateTime @default(now())
   sessions      Session[]
   accounts      Account[]
-
+  review    Review[] @relation("user_reviews")
+  subscribe Subscriber? @relation("sub_news")
   @@unique([email])
 }
 
@@ -43,7 +44,6 @@ model Session {
   userAgent String?
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   @@unique([token])
 }
 
@@ -63,3 +63,74 @@ model Account {
   updatedAt             DateTime @default(now())
 }
 
+model Image{
+  id String @id @map("_id") @default(cuid())
+  url String
+  tourid String?
+  rattached_to_dest Destination? @relation("dest_has_img")
+  rattached_to_tour Tour? @relation("has_img",fields: [tourid],references: [id])
+}
+
+model Destination{
+  id  String @id @map("_id") @default(cuid())
+  title String
+  description String
+  img String @unique
+  has_img Image @relation("dest_has_img",fields: [img],references: [id])
+  has_tour Tour[] @relation("has_destination")
+}
+
+model Duration{
+  id String @id @map("_id") @default(cuid())
+  day Int?
+  night Int?
+  linked_to_tour Tour? @relation("has_duration")
+}
+
+model Review{
+  id String @id @map("_id") @default(cuid())
+  user String
+  tour String
+  star Int
+  has_review User @relation("user_reviews",fields: [user],references: [id],onDelete: Cascade)
+  has_tour Tour @relation("has_rev",fields: [tour],references: [id],onDelete: Cascade)
+}
+
+model Tour{
+  id String @id @map("_id") @default(cuid())
+  title String
+  description String?
+  price Int
+  discount Int?
+  duration String @unique
+  rating Int?
+  destination String
+  has_destination Destination @relation("has_destination",fields: [destination],references: [id],onDelete: NoAction,onUpdate: NoAction)
+  has_duration Duration @relation("has_duration",fields: [duration],references: [id])
+  has_reviews Review[] @relation("has_rev")
+  has_images Image[] @relation("has_img")
+}
+
+model Newsletter{
+  id String @id @map("_id") @default(cuid())
+  title String
+  content String
+  createdAt DateTime @default(now())
+  sended SendedNews[] @relation("send_news")
+}
+
+model Subscriber{
+  id String @id @map("_id") @default(cuid())
+  sub_date DateTime @default(now())
+  user String @unique
+  has_user User @relation("sub_news",fields: [user],references: [id],onDelete: Cascade)
+  received_news SendedNews[] @relation("received_news")
+}
+
+model SendedNews{
+  id String @id @map("_id") @default(cuid())
+  news String
+  subs String
+  send_news Newsletter @relation("send_news",fields: [news],references: [id],onDelete: Cascade)
+  received_news Subscriber @relation("received_news",fields: [subs],references: [id],onDelete: Cascade)
+}

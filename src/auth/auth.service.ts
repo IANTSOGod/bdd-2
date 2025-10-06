@@ -112,7 +112,9 @@ export class AuthService {
               accesstoken: accesstoken,
             };
           } else {
-            return { message: 'Mot de passe incorrect' };
+            throw new UnauthorizedException({
+              message: 'Mot de passe incorrect',
+            });
           }
         } else {
           throw new UnauthorizedException({

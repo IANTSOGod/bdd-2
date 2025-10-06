@@ -67,7 +67,6 @@ export class JwtAccessStrategy extends PassportStrategy(
         // Récupère la session stockée en Redis (clé choisie: session:{id})
         const str = await this.redis.get(`session:${payload.id}`);
         if (!str) {
-          // pas de session → l'utilisateur doit se reconnecter
           throw new UnauthorizedException('Relog please');
         }
 
