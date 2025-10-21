@@ -80,13 +80,6 @@ model Destination{
   has_tour Tour[] @relation("has_destination")
 }
 
-model Duration{
-  id String @id @map("_id") @default(cuid())
-  day Int?
-  night Int?
-  linked_to_tour Tour? @relation("has_duration")
-}
-
 model Review{
   id String @id @map("_id") @default(cuid())
   user String
@@ -102,13 +95,13 @@ model Tour{
   description String?
   price Int
   discount Int?
-  duration String @unique
   rating Int?
   destination String
   has_destination Destination @relation("has_destination",fields: [destination],references: [id],onDelete: NoAction,onUpdate: NoAction)
-  has_duration Duration @relation("has_duration",fields: [duration],references: [id])
   has_reviews Review[] @relation("has_rev")
   has_images Image[] @relation("has_img")
+  has_functionnality Tours_Functionnality[] @relation("function belongs to tour")
+  has_itinerary Tour_Itinerary[] @relation("refers to a tour")
 }
 
 model Newsletter{
@@ -133,4 +126,42 @@ model SendedNews{
   subs String
   send_news Newsletter @relation("send_news",fields: [news],references: [id],onDelete: Cascade)
   received_news Subscriber @relation("received_news",fields: [subs],references: [id],onDelete: Cascade)
+}
+
+model Tours_Functionnality{
+  id String @id @map("_id")
+  tour_id String
+  functionnality_id String
+  has_tour Tour @relation("function belongs to tour",fields: [tour_id],references: [id],onDelete: Cascade)
+  reference_functionnality Functionnality @relation("refers to a functionnality",fields: [functionnality_id],references: [id],onDelete: Cascade)
+}
+
+enum Functionnality_availability{
+  Limited_free
+  Unlimited_free
+  Paying
+}
+
+model Functionnality{
+  id String @id @map("_id") @default(cuid())
+  name String
+  functionnality Functionnality_availability
+  belongs_to_tour Tours_Functionnality[] @relation("refers to a functionnality")
+}
+
+model Itinerary{
+  id String @id @map("_id") @default(cuid())
+  name String
+  linked_to_tour Tour_Itinerary[] @relation("refers to itinerary")
+}
+
+model Tour_Itinerary{
+  id String @id @map("_id") @default(cuid())
+  tour_id String
+  itinerary_id String
+  day Int?
+  night Int?
+  hours Int?
+  itinerary Itinerary @relation("refers to itinerary",fields: [itinerary_id],references: [id],onDelete: Cascade) 
+  tour Tour @relation("refers to a tour",fields: [tour_id],references: [id],onDelete:Cascade)
 }
