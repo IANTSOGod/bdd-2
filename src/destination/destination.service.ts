@@ -31,7 +31,6 @@ export class DestinationService {
             description: true,
             price: true,
             discount: true,
-            duration: true,
             rating: true,
             destination: false,
           },
