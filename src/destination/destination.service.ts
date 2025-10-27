@@ -47,7 +47,7 @@ export class DestinationService {
 
   async createbasisDestination(data: DestinationCreate) {
     const { title, description, img } = data;
-    const image = await this.imageservice.createimage({ url: img });
+    const image = await this.imageservice.createimage({ file: img });
     if (image) {
       const destination = await this.prismaservice.destination.create({
         data: {

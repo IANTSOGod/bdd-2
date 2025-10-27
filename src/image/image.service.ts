@@ -20,17 +20,15 @@ export class ImageService {
   }
 
   async createimage(data: ImageCreate) {
-    try {
-      const newimage = await this.prismaservice.image.create({
-        data: {
-          url: data.url,
-          tourid: data.tourid ? data.tourid : null,
-        },
-      });
+    const newimage = await this.prismaservice.image.create({
+      data: {
+        url: `http://localhost:3000/data/images/${data.file.filename}`,
+      },
+    });
+    if (newimage) {
       return newimage;
-    } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException({ message: 'Erreur upload' });
+    } else {
+      throw new InternalServerErrorException({ message: "erreur d'upload" });
     }
   }
 }

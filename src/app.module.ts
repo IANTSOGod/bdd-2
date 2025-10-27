@@ -5,6 +5,7 @@ import { PrismaService } from './prisma/prisma.service';
 import { RedisModule } from './redis/redis.module';
 import { DestinationModule } from './destination/destination.module';
 import { ImageModule } from './image/image.module';
+import { TourModule } from './tour/tour.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ImageModule } from './image/image.module';
     RedisModule,
     DestinationModule,
     ImageModule,
+    TourModule,
   ],
   providers: [PrismaService],
 })

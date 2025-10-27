@@ -1,8 +1,6 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class ImageCreate {
-  @IsNotEmpty({ message: 'url non vide' })
-  url: string;
-  @IsOptional({})
-  tourid?: string;
+  @IsNotEmpty({ message: 'Fichier non vide' })
+  file: Express.Multer.File;
 }

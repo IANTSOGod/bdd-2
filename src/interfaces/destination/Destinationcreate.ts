@@ -5,6 +5,6 @@ export class DestinationCreate {
   title: string;
   @IsNotEmpty({ message: 'Description non vide' })
   description: string;
-  @IsNotEmpty({ message: 'Image non vide' })
-  img: string;
+  @IsNotEmpty({ message: 'image non vide' })
+  img: Express.Multer.File;
 }
