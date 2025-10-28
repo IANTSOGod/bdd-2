@@ -129,9 +129,10 @@ model SendedNews{
 }
 
 model Tours_Functionnality{
-  id String @id @map("_id")
+  id String @id @map("_id") @default(cuid())
   tour_id String
   functionnality_id String
+  availability Functionnality_availability
   has_tour Tour @relation("function belongs to tour",fields: [tour_id],references: [id],onDelete: Cascade)
   reference_functionnality Functionnality @relation("refers to a functionnality",fields: [functionnality_id],references: [id],onDelete: Cascade)
 }
@@ -145,7 +146,6 @@ enum Functionnality_availability{
 model Functionnality{
   id String @id @map("_id") @default(cuid())
   name String
-  functionnality Functionnality_availability
   belongs_to_tour Tours_Functionnality[] @relation("refers to a functionnality")
 }
 

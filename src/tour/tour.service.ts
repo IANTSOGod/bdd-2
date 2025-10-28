@@ -3,7 +3,9 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { FunctionnalityCreate } from 'src/interfaces/tour/FunctionnalityCreate';
 import { ItineraryCreate } from 'src/interfaces/tour/ItineraryCreate';
+import { LinkedFunctionnality } from 'src/interfaces/tour/LinkedFunctionnality';
 import { LinkedItinerary } from 'src/interfaces/tour/LinkedItinerary';
 import { Tourbasic } from 'src/interfaces/tour/Tourbasic';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -93,6 +95,60 @@ export class TourService {
     } else {
       throw new NotFoundException({
         message: 'Aucun itineraire et tour correspondant',
+      });
+    }
+  }
+
+  async functionnalitycreate(data: FunctionnalityCreate) {
+    const { name } = data;
+
+    const newfunctionnality = await this.prismaservice.functionnality.create({
+      data: {
+        name: name,
+      },
+    });
+    if (newfunctionnality) {
+      return newfunctionnality;
+    } else {
+      throw new InternalServerErrorException({
+        message: 'Erreur lors de la création de fonctionnalité',
+      });
+    }
+  }
+
+  async linkfunctionnality(data: LinkedFunctionnality) {
+    const { tour_id, functionnality_id, availability } = data;
+
+    const currenttour = await this.prismaservice.tour.findUnique({
+      where: {
+        id: tour_id,
+      },
+    });
+
+    const currentfunctionnality =
+      await this.prismaservice.functionnality.findUnique({
+        where: {
+          id: functionnality_id,
+        },
+      });
+
+    if (currenttour && currentfunctionnality) {
+      const newlinkedfunctionnality =
+        await this.prismaservice.tours_Functionnality.create({
+          data: {
+            tour_id: tour_id,
+            functionnality_id: functionnality_id,
+            availability: availability,
+          },
+        });
+      if (newlinkedfunctionnality) {
+        return newlinkedfunctionnality;
+      } else {
+        throw new InternalServerErrorException({ message: 'Erreur serveur' });
+      }
+    } else {
+      throw new NotFoundException({
+        message: 'Tour or functionnality not found',
       });
     }
   }
